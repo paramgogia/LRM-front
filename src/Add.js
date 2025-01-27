@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 const AdditionalCreditsPage = () => {
+  const [activeTab, setActiveTab] = useState('student-info');
   const [formData, setFormData] = useState({
     abcID: '',
     college: '',
@@ -13,8 +14,44 @@ const AdditionalCreditsPage = () => {
     }
   });
 
-  const [errors, setErrors] = useState({});
+  const studentData = {
+    abcID: "2511BVuf9Uy8",
+    name: "Atharva Patil",
+    dob: "1997-04-23",
+    course: "Electronics Engineering",
+    specialization: "VLSI Design",
+    course_code: "ECE101",
+    admission_date: "2025-01-11",
+    total_credits: 9,
+    semester_grades: [
+      {
+        sem_no: 1,
+        subjects: [
+          {
+            name: "Engineering Calculus",
+            final_marks: 88,
+            credits: 3,
+            attempts: 2
+          },
+          {
+            name: "Engineering Physics",
+            final_marks: 88,
+            credits: 3,
+            attempts: 1
+          },
+          {
+            name: "Engineering Chemistry",
+            final_marks: 92,
+            credits: 3,
+            attempts: 1
+          }
+        ]
+      }
+    ]
+  };
 
+ 
+  const [errors, setErrors] = useState({});
   const creditTypes = ['NPTEL/MOOCs', 'Internship', 'Other College'];
 
   const handleChange = (e) => {
@@ -64,24 +101,88 @@ const AdditionalCreditsPage = () => {
       // Add your API call here
     }
   };
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white p-6">
-        <h2 className="text-2xl font-semibold mb-6">Dashboard</h2>
+      <div className="w-80 bg-gradient-to-b from-gray-800 to-gray-900 text-white p-6">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-2">Student Dashboard</h2>
+          <div className="text-gray-400 text-sm">ABC ID: {studentData.abcID}</div>
+        </div>
+
+        <div className="mb-8 border-b border-gray-700 pb-6">
+          <div className="bg-gray-700/50 rounded-lg p-4 mb-4">
+            <h3 className="text-lg font-semibold mb-4">{studentData.name}</h3>
+            <div className="space-y-2 text-sm text-gray-300">
+              <p>DOB: {formatDate(studentData.dob)}</p>
+              <p>Course: {studentData.course}</p>
+              <p>Specialization: {studentData.specialization}</p>
+              <p>Total Credits: {studentData.total_credits}</p>
+            </div>
+          </div>
+        </div>
+
         <nav>
           <ul className="space-y-2">
-            <li className="p-2 bg-gray-700 rounded">Additional Credits</li>
-            <li className="p-2 hover:bg-gray-700 rounded">Other Menu Item</li>
+            <li 
+              className={`p-3 rounded-lg cursor-pointer transition-all ${
+                activeTab === 'student-info' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'hover:bg-gray-700'
+              }`}
+              onClick={() => setActiveTab('student-info')}
+            >
+              Student Information
+            </li>
+            <li 
+              className={`p-3 rounded-lg cursor-pointer transition-all ${
+                activeTab === 'additional-credits' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'hover:bg-gray-700'
+              }`}
+              onClick={() => setActiveTab('additional-credits')}
+            >
+              Additional Credits
+            </li>
           </ul>
         </nav>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold mb-6">Add Additional Credits</h1>
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+          {activeTab === 'student-info' ? (
+            <div>
+              <h1 className="text-2xl font-bold mb-6">Academic Information</h1>
+              <div className="space-y-6">
+                <div className="border rounded-lg p-4">
+                  <h2 className="text-lg font-semibold mb-4">Semester 1 Grades</h2>
+                  <div className="space-y-4">
+                    {studentData.semester_grades[0].subjects.map((subject, index) => (
+                      <div key={index} className="flex justify-between items-center border-b pb-2">
+                        <div>
+                          <p className="font-medium">{subject.name}</p>
+                          <p className="text-sm text-gray-600">Credits: {subject.credits} | Attempts: {subject.attempts}</p>
+                        </div>
+                        <div className="text-lg font-semibold">{subject.final_marks}%</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // Additional Credits Form (existing form structure remains the same)
+            <div>
+              <h1 className="text-2xl font-bold mb-6">Add Additional Credits</h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -178,6 +279,8 @@ const AdditionalCreditsPage = () => {
               Submit
             </button>
           </form>
+          </div>
+          )}
         </div>
       </div>
     </div>
