@@ -1,290 +1,226 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { ChevronLeft, ExternalLink, LogOut } from 'lucide-react';
 
-const AdditionalCreditsPage = () => {
-  const [activeTab, setActiveTab] = useState('student-info');
-  const [formData, setFormData] = useState({
-    abcID: '',
-    college: '',
-    additional_credits: {
-      type: 'NPTEL/MOOCs',
-      credits: '',
-      course_name: '',
-      marks: '',
-      college_name: ''
-    }
-  });
-
-  const studentData = {
-    abcID: "2511BVuf9Uy8",
-    name: "Atharva Patil",
-    dob: "1997-04-23",
-    course: "Electronics Engineering",
-    specialization: "VLSI Design",
-    course_code: "ECE101",
-    admission_date: "2025-01-11",
-    total_credits: 9,
-    semester_grades: [
+const AcademicDashboard = () => {
+  const [expandedInstitution, setExpandedInstitution] = useState(null);
+  
+  const dummyData = {
+    studentName: "Simran Singh",
+    totalCredits: 178,
+    creditAccumulation: [
       {
-        sem_no: 1,
+        id: 1,
+        institution: "VJTI Mumbai",
+        logo: "VJTI",
+        logoColor: "bg-blue-600",
+        batch: "2015-2019",
+        course: "B.Tech",
+        credit: 94,
         subjects: [
-          {
-            name: "Engineering Calculus",
-            final_marks: 88,
-            credits: 3,
-            attempts: 2
-          },
-          {
-            name: "Engineering Physics",
-            final_marks: 88,
-            credits: 3,
-            attempts: 1
-          },
-          {
-            name: "Engineering Chemistry",
-            final_marks: 92,
-            credits: 3,
-            attempts: 1
-          }
+          { subject: "Advanced Data Structures", course: "B.Tech", code: "CS301", year: 2019, credit: 6 },
+          { subject: "Computer Networks", course: "B.Tech", code: "CS302", year: 2019, credit: 4 },
+          { subject: "Operating Systems", course: "B.Tech", code: "CS303", year: 2019, credit: 6 },
         ]
+      },
+      {
+        id: 2,
+        institution: "SPIT Mumbai",
+        logo: "SPIT",
+        logoColor: "bg-emerald-600",
+        batch: "2019-2022",
+        course: "M.Tech",
+        credit: 54
+      },
+      {
+        id: 3,
+        institution: "IIT Bombay",
+        logo: "IITB",
+        logoColor: "bg-violet-600",
+        batch: "2019-2022",
+        course: "Ph.D",
+        credit: 54
       }
+    ],
+    creditHistory: [
+      { date: "10/05/2023", institution: "VJTI Mumbai", credit: 8 },
+      { date: "08/03/2019", institution: "VJTI Mumbai", credit: 12 },
+      { date: "30/06/2018", institution: "SPIT Mumbai", credit: 36 },
+      { date: "25/05/2017", institution: "IIT Bombay", credit: 8 }
     ]
   };
 
- 
-  const [errors, setErrors] = useState({});
-  const creditTypes = ['NPTEL/MOOCs', 'Internship', 'Other College'];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes('additional_credits.')) {
-      const field = name.split('.')[1];
-      setFormData(prev => ({
-        ...prev,
-        additional_credits: {
-          ...prev.additional_credits,
-          [field]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-    
-    // Validation
-    if (!formData.additional_credits.type) {
-      newErrors.type = 'Type is required';
-    }
-    if (!formData.additional_credits.credits) {
-      newErrors.credits = 'Credits are required';
-    }
-    if (!formData.additional_credits.course_name) {
-      newErrors.course_name = 'Course name is required';
-    }
-    if (!formData.additional_credits.marks) {
-      newErrors.marks = 'Marks are required';
-    }
-    if (formData.additional_credits.type === 'Other College' && !formData.additional_credits.college_name) {
-      newErrors.college_name = 'College name is required for Other College type';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Form submitted:', formData);
-      // Add your API call here
-    }
-  };
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-80 bg-gradient-to-b from-gray-800 to-gray-900 text-white p-6">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Student Dashboard</h2>
-          <div className="text-gray-400 text-sm">ABC ID: {studentData.abcID}</div>
-        </div>
-
-        <div className="mb-8 border-b border-gray-700 pb-6">
-          <div className="bg-gray-700/50 rounded-lg p-4 mb-4">
-            <h3 className="text-lg font-semibold mb-4">{studentData.name}</h3>
-            <div className="space-y-2 text-sm text-gray-300">
-              <p>DOB: {formatDate(studentData.dob)}</p>
-              <p>Course: {studentData.course}</p>
-              <p>Specialization: {studentData.specialization}</p>
-              <p>Total Credits: {studentData.total_credits}</p>
+    <div className="min-h-screen bg-slate-50">
+      {/* Navbar */}
+      <nav className="w-full bg-gradient-to-r from-blue-700 to-blue-900 text-white">
+        <div className="max-w-[1400px] mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <img src="/api/placeholder/40/40" alt="Indian emblem" className="h-10 brightness-0 invert" />
+            <div>
+              <div className="font-semibold tracking-wide">ACADEMIC BANK OF CREDITS</div>
+              <div className="text-xs text-blue-100">Ministry of Education, Government of India</div>
             </div>
           </div>
+          <button className="flex items-center gap-2 text-blue-100 hover:text-white transition-colors">
+            <span>Log out</span>
+            <LogOut size={18} />
+          </button>
         </div>
-
-        <nav>
-          <ul className="space-y-2">
-            <li 
-              className={`p-3 rounded-lg cursor-pointer transition-all ${
-                activeTab === 'student-info' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'hover:bg-gray-700'
-              }`}
-              onClick={() => setActiveTab('student-info')}
-            >
-              Student Information
-            </li>
-            <li 
-              className={`p-3 rounded-lg cursor-pointer transition-all ${
-                activeTab === 'additional-credits' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'hover:bg-gray-700'
-              }`}
-              onClick={() => setActiveTab('additional-credits')}
-            >
-              Additional Credits
-            </li>
-          </ul>
-        </nav>
-      </div>
+      </nav>
 
       {/* Main Content */}
-      <div className="flex-1 p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
-          {activeTab === 'student-info' ? (
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Academic Information</h1>
-              <div className="space-y-6">
-                <div className="border rounded-lg p-4">
-                  <h2 className="text-lg font-semibold mb-4">Semester 1 Grades</h2>
-                  <div className="space-y-4">
-                    {studentData.semester_grades[0].subjects.map((subject, index) => (
-                      <div key={index} className="flex justify-between items-center border-b pb-2">
-                        <div>
-                          <p className="font-medium">{subject.name}</p>
-                          <p className="text-sm text-gray-600">Credits: {subject.credits} | Attempts: {subject.attempts}</p>
-                        </div>
-                        <div className="text-lg font-semibold">{subject.final_marks}%</div>
-                      </div>
-                    ))}
+      <div className="max-w-[1400px] mx-auto px-4 py-8">
+        {!expandedInstitution ? (
+          <>
+            {/* Header Section */}
+            <div className="flex justify-between items-start mb-12">
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl font-bold">
+                    {dummyData.studentName.split(' ').map(n => n[0]).join('')}
                   </div>
+                </div>
+                <div>
+                  <p className="text-gray-600 mb-1">Hello {dummyData.studentName}!</p>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-4xl font-bold text-blue-900">{dummyData.totalCredits}</span>
+                    <span className="text-gray-500">Total Academic Credit</span>
+                  </div>
+                  <button className="mt-3 px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg">
+                    Transfer Credits
+                  </button>
+                </div>
+              </div>
+              <div className="w-48 h-28 bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-lg flex items-center justify-center text-white">
+                <span className="text-sm font-medium">2024-1020-5497</span>
+              </div>
+            </div>
+
+            {/* Two Column Layout */}
+            <div className="grid grid-cols-2 gap-8">
+              {/* Credit Accumulation Section */}
+              <div>
+                <h2 className="text-xl font-semibold text-blue-900 mb-4">Credit Accumulation</h2>
+                <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-blue-50 text-sm text-blue-900">
+                        <th className="text-left py-3 px-4 font-semibold">Academic Institution</th>
+                        <th className="text-left py-3 px-4 font-semibold">Batch</th>
+                        <th className="text-left py-3 px-4 font-semibold">Course</th>
+                        <th className="text-left py-3 px-4 font-semibold">Credit</th>
+                        <th className="w-10"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dummyData.creditAccumulation.map((item) => (
+                        <tr key={item.id} className="border-b border-blue-50 last:border-0 hover:bg-blue-50/30 transition-colors">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 ${item.logoColor} rounded-lg flex items-center justify-center text-white text-sm font-medium shadow-sm`}>
+                                {item.logo}
+                              </div>
+                              <span className="font-medium text-blue-900">{item.institution}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-gray-600">{item.batch}</td>
+                          <td className="py-3 px-4 text-gray-600">{item.course}</td>
+                          <td className="py-3 px-4 font-medium text-blue-900">{item.credit}</td>
+                          <td className="py-3 px-4">
+                            <button 
+                              onClick={() => setExpandedInstitution(item)}
+                              className="text-blue-400 hover:text-blue-600 transition-colors"
+                            >
+                              <ExternalLink size={18} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Credit History Section */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-blue-900">Credit History</h2>
+                  <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">view all</button>
+                </div>
+                <div className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-blue-50 text-sm text-blue-900">
+                        <th className="text-left py-3 px-4 font-semibold">Date</th>
+                        <th className="text-left py-3 px-4 font-semibold">Academic Institution</th>
+                        <th className="text-left py-3 px-4 font-semibold">Credit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dummyData.creditHistory.map((item, index) => (
+                        <tr key={index} className="border-b border-blue-50 last:border-0 hover:bg-blue-50/30 transition-colors">
+                          <td className="py-3 px-4 text-gray-600">{item.date}</td>
+                          <td className="py-3 px-4 text-gray-600">{item.institution}</td>
+                          <td className="py-3 px-4 font-medium text-blue-900">{item.credit}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
-          ) : (
-            // Additional Credits Form (existing form structure remains the same)
-            <div>
-              <h1 className="text-2xl font-bold mb-6">Add Additional Credits</h1>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">ABC ID</label>
-              <input
-                type="text"
-                name="abcID"
-                value={formData.abcID}
-                onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">College</label>
-              <input
-                type="text"
-                name="college"
-                value={formData.college}
-                onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Credit Type</label>
-              <select
-                name="additional_credits.type"
-                value={formData.additional_credits.type}
-                onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-              >
-                {creditTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-              {errors.type && <p className="text-red-500 text-sm">{errors.type}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Credits</label>
-              <input
-                type="number"
-                name="additional_credits.credits"
-                value={formData.additional_credits.credits}
-                onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-              />
-              {errors.credits && <p className="text-red-500 text-sm">{errors.credits}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Course Name</label>
-              <input
-                type="text"
-                name="additional_credits.course_name"
-                value={formData.additional_credits.course_name}
-                onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-              />
-              {errors.course_name && <p className="text-red-500 text-sm">{errors.course_name}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Marks</label>
-              <input
-                type="number"
-                name="additional_credits.marks"
-                value={formData.additional_credits.marks}
-                onChange={handleChange}
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-              />
-              {errors.marks && <p className="text-red-500 text-sm">{errors.marks}</p>}
-            </div>
-
-            {formData.additional_credits.type === 'Other College' && (
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">College Name</label>
-                <input
-                  type="text"
-                  name="additional_credits.college_name"
-                  value={formData.additional_credits.college_name}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.college_name && <p className="text-red-500 text-sm">{errors.college_name}</p>}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors"
+          </>
+        ) : (
+          /* Expanded View */
+          <div className="bg-white rounded-xl border border-blue-100 shadow-sm p-6">
+            <button 
+              onClick={() => setExpandedInstitution(null)}
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6"
             >
-              Submit
+              <ChevronLeft size={20} />
+              <span className="font-medium">Credit Accumulation for {expandedInstitution.institution}</span>
             </button>
-          </form>
+
+            <div className="flex items-center gap-6 mb-8 bg-blue-50 p-6 rounded-xl">
+              <div className={`w-16 h-16 ${expandedInstitution.logoColor} rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-md`}>
+                {expandedInstitution.logo}
+              </div>
+              <div>
+                <span className="text-3xl font-bold text-blue-900">{expandedInstitution.credit}</span>
+                <p className="text-gray-600">Total Academic Credit for {expandedInstitution.institution}</p>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-blue-900 mb-4">Subject Credit Distribution</h2>
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-blue-50 text-sm text-blue-900">
+                    <th className="text-left py-3 px-4 font-semibold rounded-tl-lg">Subject</th>
+                    <th className="text-left py-3 px-4 font-semibold">Course</th>
+                    <th className="text-left py-3 px-4 font-semibold">Subject Code</th>
+                    <th className="text-left py-3 px-4 font-semibold">Year</th>
+                    <th className="text-left py-3 px-4 font-semibold rounded-tr-lg">Credit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expandedInstitution.subjects?.map((subject, index) => (
+                    <tr key={index} className="border-b border-blue-50 last:border-0 hover:bg-blue-50/30 transition-colors">
+                      <td className="py-3 px-4 text-gray-600">{subject.subject}</td>
+                      <td className="py-3 px-4 text-gray-600">{subject.course}</td>
+                      <td className="py-3 px-4 text-gray-600">{subject.code}</td>
+                      <td className="py-3 px-4 text-gray-600">{subject.year}</td>
+                      <td className="py-3 px-4 font-medium text-blue-900">{subject.credit}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default AdditionalCreditsPage;
+export default AcademicDashboard;
