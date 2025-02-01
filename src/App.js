@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import DashboardLayout from './pages/dash';
 import Overview from './pages/Overview';
 import Credits from './pages/Credits';
-// import History from './pages/History';
-// import Profile from './pages/Profile';
+import History from './pages/History';
+import Profile from './pages/Profile';
 // import Settings from './pages/Settings';
 import Login from './pages/Login';
 
@@ -12,15 +12,13 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<DashboardLayout>
-           <Routes>
-            <Route index element={<Overview />} />
-            <Route path="credits" element={<Credits />} />
-            {/* <Route path="history" element={<History />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="settings" element={<Settings />} /> */}
-          </Routes> 
-        </DashboardLayout>} />
+        <Route element={<DashboardLayout><Outlet /></DashboardLayout>}>
+          <Route index element={<Overview />} />
+          <Route path="credits" element={<Credits />} />
+          <Route path="history" element={<History />} />
+          <Route path="profile" element={<Profile />} />
+          {/* <Route path="settings" element={<Settings />} />  */}
+        </Route>
       </Routes>
     </BrowserRouter>
   );
