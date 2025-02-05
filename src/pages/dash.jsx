@@ -63,7 +63,7 @@ const DashboardLayout = ({ children }) => {
             </h1>
             <div className="flex items-center gap-4">
               <div className="text-sm text-gray-600">
-                Welcome, Simran Singh
+                Welcome, USER
               </div>
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
                 SS
