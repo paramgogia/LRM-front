@@ -8,6 +8,11 @@ const DashboardLayout = ({ children }) => {
 
   const menuItems = [
     { icon: Home, label: 'Overview', path: '/' },
+    
+    {icon: GraduationCap, label: 'College Admission', path: '/college-admission'},
+    {icon: GraduationCap, label: 'NAD Admission', path: '/nad-admission'},
+    {icon: GraduationCap, label: 'Issue Certificate', path: '/issue-certificate'},
+    {icon: GraduationCap, label: 'Transfer Credits', path: '/transfer-credits'},
     { icon: GraduationCap, label: 'Credits', path: '/credits' },
     { icon: History, label: 'History', path: '/history' },
     { icon: UserCircle, label: 'Profile', path: '/profile' },
