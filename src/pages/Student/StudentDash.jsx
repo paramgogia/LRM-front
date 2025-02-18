@@ -2,23 +2,15 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, GraduationCap, History, UserCircle, Settings, LogOut } from 'lucide-react';
 
-const DashboardLayout = ({ children }) => {
+const Studentdash = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const menuItems = [
-    { icon: Home, label: 'Overview', path: '/' },
     
-    {icon: GraduationCap, label: 'College Admission', path: '/college-admission'},
-    // {icon: GraduationCap, label: 'NAD Admission', path: '/nad-admission'},
-    {icon: GraduationCap, label: 'Issue Certificate', path: '/issue-certificate'},
-    {icon: GraduationCap, label: 'Transfer Credits', path: '/transfer-credits'},
-    {icon: GraduationCap, label: 'Redeem Credits', path: '/redeem-credits'},
-    { icon: GraduationCap, label: 'Credits', path: '/credits' },
-    // { icon: GraduationCap, label: 'Students Dashboard', path: '/academic-dashboard' },
-    { icon: History, label: 'History', path: '/history' },
-    { icon: UserCircle, label: 'Profile', path: '/profile' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+   { icon: GraduationCap, label: 'Academic Dashboard', path: '/student/academic-dashboard' },
+
+    
   ];
 
   return (
@@ -28,7 +20,7 @@ const DashboardLayout = ({ children }) => {
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <img src="/api/placeholder/40/40" alt="Logo" className="h-8" />
-            <div className="font-semibold text-sm text-blue-900">ABC Portal</div>
+            <div className="font-semibold text-sm text-blue-900">Student Portal</div>
           </div>
         </div>
         
@@ -73,7 +65,7 @@ const DashboardLayout = ({ children }) => {
                 Welcome, USER
               </div>
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
-                SS
+                S
               </div>
             </div>
           </div>
@@ -88,4 +80,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default Studentdash;

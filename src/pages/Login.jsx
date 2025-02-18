@@ -4,13 +4,24 @@ import axios from 'axios';
 
 const AuthPage = () => {
   const navigate = useNavigate();
-  const [authType, setAuthType] = useState('login');
+  const [loginType, setLoginType] = useState('college');
+  const [showRegistration, setShowRegistration] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Form data state for different auth types
-  const [loginData, setLoginData] = useState({
-    organization: 'Org2',
+  // Login data state for different user types
+  const [collegeLogin, setCollegeLogin] = useState({
+    username: '',
+    password: '',
+    organization: 'Org2'
+  });
+
+  const [nadLogin, setNadLogin] = useState({
+    username: '',
+    password: ''
+  });
+
+  const [studentLogin, setStudentLogin] = useState({
     username: '',
     password: ''
   });
@@ -22,15 +33,24 @@ const AuthPage = () => {
     writeUrl: ''
   });
 
-  const [updateData, setUpdateData] = useState({
-    college: '',
-    readUrl: '',
-    writeUrl: ''
-  });
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      let loginData;
+      switch (loginType) {
+        case 'college':
+          loginData = collegeLogin;
+          break;
+        case 'nad':
+          loginData = nadLogin;
+          break;
+        case 'student':
+          loginData = studentLogin;
+          break;
+        default:
+          loginData = collegeLogin;
+      }
+
       const response = await axios.post('http://127.0.0.1:3000/login', loginData, {
         headers: { 'Content-Type': 'application/json' }
       });
@@ -57,69 +77,52 @@ const AuthPage = () => {
       
       setSuccess('Registration successful!');
       setError('');
-      setAuthType('login');
+      setShowRegistration(false);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
   };
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:3000/update-access-urls', updateData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'username': 'SPIT',
-          'organization': 'Org2',
-          'identity': 'e5858d0503cc9fbef80ff51c2fcfd5567a127f9d01b7a50ea6b8f0bc3a8419ac'
-        }
-      });
-      
-      setSuccess('Update successful!');
-      setError('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Update failed');
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-xl shadow-lg p-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl flex gap-8">
+        {/* Login Section */}
+        <div className="flex-1 bg-white rounded-xl shadow-lg p-8">
           <h1 className="text-2xl font-bold text-center text-gray-900 mb-8">
-            Academic Bank of Credits
+            Academic Bank of Credits - Login
           </h1>
 
+          {/* Login Tabs */}
           <div className="flex space-x-2 mb-6">
             <button
-              onClick={() => setAuthType('login')}
+              onClick={() => setLoginType('college')}
               className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
-                authType === 'login'
+                loginType === 'college'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              Login
+              College
             </button>
             <button
-              onClick={() => setAuthType('register')}
+              onClick={() => setLoginType('nad')}
               className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
-                authType === 'register'
+                loginType === 'nad'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              Register
+              NAD
             </button>
             <button
-              onClick={() => setAuthType('update')}
+              onClick={() => setLoginType('student')}
               className={`flex-1 py-2 rounded-lg font-medium transition-colors ${
-                authType === 'update'
+                loginType === 'student'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              Update
+              Student
             </button>
           </div>
 
@@ -135,7 +138,8 @@ const AuthPage = () => {
             </div>
           )}
 
-          {authType === 'login' && (
+          {/* Login Forms */}
+          {loginType === 'college' && (
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -143,11 +147,11 @@ const AuthPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={loginData.organization}
+                  value={collegeLogin.organization}
                   onChange={(e) =>
-                    setLoginData({ ...loginData, organization: e.target.value })
+                    setCollegeLogin({ ...collegeLogin, organization: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -156,11 +160,11 @@ const AuthPage = () => {
                 </label>
                 <input
                   type="text"
-                  value={loginData.username}
+                  value={collegeLogin.username}
                   onChange={(e) =>
-                    setLoginData({ ...loginData, username: e.target.value })
+                    setCollegeLogin({ ...collegeLogin, username: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -169,11 +173,11 @@ const AuthPage = () => {
                 </label>
                 <input
                   type="password"
-                  value={loginData.password}
+                  value={collegeLogin.password}
                   onChange={(e) =>
-                    setLoginData({ ...loginData, password: e.target.value })
+                    setCollegeLogin({ ...collegeLogin, password: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
               <button
@@ -185,19 +189,19 @@ const AuthPage = () => {
             </form>
           )}
 
-          {authType === 'register' && (
-            <form onSubmit={handleRegister} className="space-y-4">
+          {loginType === 'nad' && (
+            <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Username
                 </label>
                 <input
                   type="text"
-                  value={registerData.username}
+                  value={nadLogin.username}
                   onChange={(e) =>
-                    setRegisterData({ ...registerData, username: e.target.value })
+                    setNadLogin({ ...nadLogin, username: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -206,97 +210,126 @@ const AuthPage = () => {
                 </label>
                 <input
                   type="password"
-                  value={registerData.password}
+                  value={nadLogin.password}
                   onChange={(e) =>
-                    setRegisterData({ ...registerData, password: e.target.value })
+                    setNadLogin({ ...nadLogin, password: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Read URL
-                </label>
-                <input
-                  type="text"
-                  value={registerData.readUrl}
-                  onChange={(e) =>
-                    setRegisterData({ ...registerData, readUrl: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Write URL
-                </label>
-                <input
-                  type="text"
-                  value={registerData.writeUrl}
-                  onChange={(e) =>
-                    setRegisterData({ ...registerData, writeUrl: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
                 className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Register
+                Sign In
               </button>
             </form>
           )}
 
-          {authType === 'update' && (
-            <form onSubmit={handleUpdate} className="space-y-4">
+          {loginType === 'student' && (
+            <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  College
+                  Username
                 </label>
                 <input
                   type="text"
-                  value={updateData.college}
+                  value={studentLogin.username}
                   onChange={(e) =>
-                    setUpdateData({ ...updateData, college: e.target.value })
+                    setStudentLogin({ ...studentLogin, username: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Read URL
+                  Password
                 </label>
                 <input
-                  type="text"
-                  value={updateData.readUrl}
+                  type="password"
+                  value={studentLogin.password}
                   onChange={(e) =>
-                    setUpdateData({ ...updateData, readUrl: e.target.value })
+                    setStudentLogin({ ...studentLogin, password: e.target.value })
                   }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Write URL
-                </label>
-                <input
-                  type="text"
-                  value={updateData.writeUrl}
-                  onChange={(e) =>
-                    setUpdateData({ ...updateData, writeUrl: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
                 className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
-                Update
+                Sign In
               </button>
             </form>
           )}
+        </div>
+
+        {/* Registration Section */}
+        <div className="flex-1 bg-white rounded-xl shadow-lg p-8">
+          <h1 className="text-2xl font-bold text-center text-gray-900 mb-8">
+            New College Registration
+          </h1>
+
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                value={registerData.username}
+                onChange={(e) =>
+                  setRegisterData({ ...registerData, username: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={registerData.password}
+                onChange={(e) =>
+                  setRegisterData({ ...registerData, password: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Read URL
+              </label>
+              <input
+                type="text"
+                value={registerData.readUrl}
+                onChange={(e) =>
+                  setRegisterData({ ...registerData, readUrl: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Write URL
+              </label>
+              <input
+                type="text"
+                value={registerData.writeUrl}
+                onChange={(e) =>
+                  setRegisterData({ ...registerData, writeUrl: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              Register
+            </button>
+          </form>
         </div>
       </div>
     </div>

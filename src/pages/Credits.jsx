@@ -7,12 +7,36 @@ const Credits = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedSemester, setSelectedSemester] = useState(1);
-  const [activeTab, setActiveTab] = useState('semester'); // New state for tab control
+  const [activeTab, setActiveTab] = useState('semester');
   const [redeemSuccess, setRedeemSuccess] = useState(false);
   const headers = {
     'username': 'SPIT',
     'organization': 'Org2',
     'identity': 'e5858d0503cc9fbef80ff51c2fcfd5567a127f9d01b7a50ea6b8f0bc3a8419ac'
+  };
+
+  // Calculate total credits
+  const calculateTotalCredits = (data) => {
+    if (!data) return 0;
+    
+    // Sum semester credits
+    const semesterCredits = data.semester_grades?.reduce((total, semester) => {
+      const semTotal = semester.subjects.reduce((sum, subject) => {
+        // Convert each credit value to string and sum its digits
+        const creditDigits = String(subject.credits).split('').reduce((a, b) => Number(a) + Number(b), 0);
+        return sum + creditDigits;
+      }, 0);
+      return total + semTotal;
+    }, 0) || 0;
+
+    // Sum additional credits
+    const additionalCredits = data.additional_credits?.reduce((total, credit) => {
+      // Convert each credit value to string and sum its digits
+      const creditDigits = String(credit.credits).split('').reduce((a, b) => Number(a) + Number(b), 0);
+      return total + creditDigits;
+    }, 0) || 0;
+
+    return semesterCredits + additionalCredits;
   };
 
   const handleSubmit = async (e) => {
@@ -41,9 +65,7 @@ const Credits = () => {
         min_credits: 10
       }, { headers });
       setRedeemSuccess(true);
-      // Refresh data after redeeming credits
       handleSubmit(new Event('submit'));
-      console.log(response);
     } catch (err) {
       setError(err.message || 'Failed to redeem credits');
     }
@@ -65,6 +87,30 @@ const Credits = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        {studentData && (
+          <div className="mb-8 flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+                <svg className="w-12 h-12 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">{studentData.name}</h1>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold">{calculateTotalCredits(studentData)}</span>
+                  <span className="text-gray-600">Total Academic Credits</span>
+                </div>
+              </div>
+            </div>
+            <div className="bg-red-100 p-4 rounded-lg">
+              <div className="text-red-500 font-medium">Academic Bank of Credits</div>
+              <div className="text-lg font-bold">2042-1020-5697</div>
+            </div>
+          </div>
+        )}
+
         {/* Search Form */}
         <form onSubmit={handleSubmit} className="mb-8">
           <div className="flex gap-4">
@@ -92,176 +138,143 @@ const Credits = () => {
 
         {studentData && (
           <div className="space-y-8">
-            {/* Student Info Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-500">Name</h3>
-                  <p className="text-lg font-semibold text-gray-900">{studentData.name}</p>
-                </div>
-                <div className="p-4 bg-purple-50 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-500">Course</h3>
-                  <p className="text-lg font-semibold text-gray-900">{studentData.course}</p>
-                </div>
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-500">Specialization</h3>
-                  <p className="text-lg font-semibold text-gray-900">{studentData.specialization}</p>
-                </div>
-                <div className="p-4 bg-yellow-50 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-500">Course Code</h3>
-                  <p className="text-lg font-semibold text-gray-900">{studentData.course_code}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Credits Overview */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold mb-6">Credits Overview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Total Credits Required</p>
-                  <p className="text-3xl font-bold text-blue-600">{studentData.total_credits}</p>
-                </div>
-                <div className="p-4 bg-green-50 rounded-lg">
-                  <p className="text-sm text-gray-600">Additional Credits</p>
-                  <p className="text-3xl font-bold text-green-600">
-                    {studentData.additional_credits?.length || 0}
-                  </p>
-                </div>
-              </div>
-
-              <button
-                onClick={handleRedeemCredits}
-                className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                Redeem Credits
-              </button>
-              {redeemSuccess && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-600">
-            Credits Redeemed Successfully
-          </div>
-        )}
-
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-            {error}
-          </div>
-        )}
-            </div>
-
-            {/* Tabs */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="flex gap-4 mb-6">
-                <button
-                  onClick={() => setActiveTab('semester')}
-                  className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                    activeTab === 'semester'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Semester Grades
-                </button>
-                <button
-                  onClick={() => setActiveTab('additional')}
-                  className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                    activeTab === 'additional'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Additional Credits
-                </button>
-              </div>
-
-              {/* Semester Grades Content */}
-              {activeTab === 'semester' && studentData.semester_grades?.length > 0 && (
-                <div>
-                  <div className="flex gap-2 mb-6 flex-wrap">
-                    {studentData.semester_grades.map((sem) => (
-                      <button
-                        key={sem.sem_no}
-                        onClick={() => setSelectedSemester(sem.sem_no)}
-                        className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                          selectedSemester === sem.sem_no
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        Semester {sem.sem_no}
-                      </button>
-                    ))}
+            {/* Student Info Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {studentData.semester_grades?.map((semester) => (
+                <div key={semester.sem_no} className="bg-white rounded-xl shadow-lg p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-blue-600 font-bold">{semester.sem_no}</span>
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-500">Semester {semester.sem_no}</h3>
+                      <p className="text-lg font-semibold text-gray-900">
+                        {semester.subjects.reduce((sum, subject) => sum + subject.credits, 0)} Credits
+                      </p>
+                    </div>
                   </div>
+                </div>
+              ))}
+            </div>
 
-                  <div className="overflow-x-auto">
+            {/* Tabs Section */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="border-b">
+                <div className="flex">
+                  <button
+                    onClick={() => setActiveTab('semester')}
+                    className={`px-6 py-3 font-medium ${
+                      activeTab === 'semester'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Semester Grades
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('additional')}
+                    className={`px-6 py-3 font-medium ${
+                      activeTab === 'additional'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Other Credits
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                {activeTab === 'semester' && (
+                  <div className="space-y-6">
+                    <div className="flex gap-2 flex-wrap">
+                      {studentData.semester_grades?.map((sem) => (
+                        <button
+                          key={sem.sem_no}
+                          onClick={() => setSelectedSemester(sem.sem_no)}
+                          className={`px-4 py-2 rounded-lg ${
+                            selectedSemester === sem.sem_no
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          Semester {sem.sem_no}
+                        </button>
+                      ))}
+                    </div>
+
                     <table className="w-full">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Subject
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Credits
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Marks
-                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject Code</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Year</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody>
                         {studentData.semester_grades
                           .find(sem => sem.sem_no === selectedSemester)
                           ?.subjects.map((subject, index) => (
-                            <tr key={index} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap">{subject.name}</td>
-                              <td className="px-6 py-4 whitespace-nowrap">{subject.credits}</td>
-                              <td className="px-6 py-4 whitespace-nowrap">{subject.final_marks}</td>
+                            <tr key={index} className="border-b">
+                              <td className="px-6 py-4">{subject.name}</td>
+                              <td className="px-6 py-4">{subject.code || '-'}</td>
+                              <td className="px-6 py-4">{subject.credits}</td>
+                              <td className="px-6 py-4">{subject.year || '-'}</td>
+                              <td className="px-6 py-4">{subject.final_marks}</td>
                             </tr>
                           ))}
                       </tbody>
                     </table>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Additional Credits Content */}
-              {activeTab === 'additional' && studentData.additional_credits?.length > 0 && (
-                <div className="overflow-x-auto">
+                {activeTab === 'additional' && (
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Course Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Type
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Credits
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Marks
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          College
-                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Course Name</th>
+                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th> */}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">College</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {studentData.additional_credits.map((credit, index) => (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap">{credit.course_name}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">{credit.type}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">{credit.credits}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">{credit.marks}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">{credit.college_name}</td>
+                    <tbody>
+                      {studentData.additional_credits?.map((credit, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="px-6 py-4">{credit.course_name}</td>
+                          {/* <td className="px-6 py-4">{credit.type}</td> */}
+                          <td className="px-6 py-4">{credit.credits}</td>
+                          <td className="px-6 py-4">{credit.marks}</td>
+                          <td className="px-6 py-4">{credit.college_name}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                )}
+              </div>
+            </div>
+
+            {/* Credit Management */}
+            {/* <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold mb-6">Credit Management</h2>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleRedeemCredits}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Redeem Credits
+                </button>
+                
+              </div>
+              {redeemSuccess && (
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-600">
+                  Credits Redeemed Successfully
                 </div>
               )}
-            </div>
+            </div> */}
           </div>
         )}
       </div>

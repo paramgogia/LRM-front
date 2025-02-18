@@ -2,23 +2,14 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, GraduationCap, History, UserCircle, Settings, LogOut } from 'lucide-react';
 
-const DashboardLayout = ({ children }) => {
+const Nad_Dash = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const menuItems = [
-    { icon: Home, label: 'Overview', path: '/' },
     
-    {icon: GraduationCap, label: 'College Admission', path: '/college-admission'},
-    // {icon: GraduationCap, label: 'NAD Admission', path: '/nad-admission'},
-    {icon: GraduationCap, label: 'Issue Certificate', path: '/issue-certificate'},
-    {icon: GraduationCap, label: 'Transfer Credits', path: '/transfer-credits'},
-    {icon: GraduationCap, label: 'Redeem Credits', path: '/redeem-credits'},
-    { icon: GraduationCap, label: 'Credits', path: '/credits' },
-    // { icon: GraduationCap, label: 'Students Dashboard', path: '/academic-dashboard' },
-    { icon: History, label: 'History', path: '/history' },
-    { icon: UserCircle, label: 'Profile', path: '/profile' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    {icon: GraduationCap, label: 'Student Registration', path: '/nad/nad-admission'},
+    {icon: GraduationCap, label: 'College /Other HEI Registration', path: '/nad/college-registration'},
   ];
 
   return (
@@ -28,7 +19,7 @@ const DashboardLayout = ({ children }) => {
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <img src="/api/placeholder/40/40" alt="Logo" className="h-8" />
-            <div className="font-semibold text-sm text-blue-900">ABC Portal</div>
+            <div className="font-semibold text-sm text-blue-900">NAD Portal</div>
           </div>
         </div>
         
@@ -88,4 +79,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default Nad_Dash;
