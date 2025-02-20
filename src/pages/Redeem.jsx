@@ -24,7 +24,7 @@ const RedeemCreditsComponent = () => {
     try {
       const res = await axios.post('http://localhost:3000/certificate/college/redeem-credits', {
         abcID,
-        min_credits: minCredits
+        // min_credits: minCredits
       }, { headers });
       setResponse(res.data);
     } catch (err) {
@@ -66,9 +66,9 @@ const RedeemCreditsComponent = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="minCredits">
-                Minimum Credits
+                Minimum Credits (Optional)
               </label>
               <input
                 id="minCredits"
@@ -78,7 +78,7 @@ const RedeemCreditsComponent = () => {
                 min="0"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
-            </div>
+            </div> */}
             <button
               onClick={handleRedeemCredits}
               disabled={loading || !abcID}
@@ -128,6 +128,8 @@ const RedeemCreditsComponent = () => {
                   <div className="mb-3">
                     <p className="text-sm font-semibold text-green-600">{response.message}</p>
                   </div>
+                  {console.log(response.studentData)
+                  }
                   {response.studentData && (
                     <div className="space-y-3">
                       <div className="flex flex-col md:flex-row md:gap-4">

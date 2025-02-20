@@ -112,7 +112,7 @@ const TransferCredits = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              College
+              Current College
             </label>
             <input
               type="text"
@@ -126,7 +126,7 @@ const TransferCredits = () => {
 
           <div className="border-t pt-4 mt-4">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Additional Credits Details
+              Transfer Credits Form
             </h3>
 
             <div className="space-y-4">
@@ -174,7 +174,7 @@ const TransferCredits = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  College Name
+                  College Name (Form where the course was done)
                 </label>
                 <input
                   type="text"

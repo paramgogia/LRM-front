@@ -46,7 +46,7 @@ const CollegeAdmissionForm = () => {
       );
 
       setStatus({
-        message: 'Student admitted successfully!',
+        message: 'ABC ID Submitted successfully!',
         type: 'success'
       });
     } catch (error) {

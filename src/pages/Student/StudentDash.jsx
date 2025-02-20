@@ -7,7 +7,7 @@ const Studentdash = ({ children }) => {
   const location = useLocation();
 
   const menuItems = [
-    
+    { icon: Home, label: 'Overview', path: '/' },
    { icon: GraduationCap, label: 'Academic Dashboard', path: '/student/academic-dashboard' },
 
     

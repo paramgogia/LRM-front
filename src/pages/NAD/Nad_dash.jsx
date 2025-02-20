@@ -7,7 +7,7 @@ const Nad_Dash = ({ children }) => {
   const location = useLocation();
 
   const menuItems = [
-    
+    { icon: Home, label: 'Overview', path: '/' },
     {icon: GraduationCap, label: 'Student Registration', path: '/nad/nad-admission'},
     {icon: GraduationCap, label: 'College /Other HEI Registration', path: '/nad/college-registration'},
   ];
