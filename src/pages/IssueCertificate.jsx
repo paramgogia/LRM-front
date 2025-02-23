@@ -137,15 +137,18 @@ const IssueCertificate = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Issue Certificate</h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-600">
+            <h2 className="text-3xl font-bold text-white">Issue Certificate</h2>
+            <p className="mt-2 text-blue-100">Enter student details and semester grades</p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label htmlFor="abcID" className="block text-sm font-medium text-gray-700">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="space-y-2">
+                <label htmlFor="abcID" className="block text-sm font-semibold text-gray-700">
                   ABC ID
                 </label>
                 <input
@@ -155,12 +158,13 @@ const IssueCertificate = () => {
                   value={formData.abcID}
                   onChange={handleInputChange}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                  placeholder="Enter ABC ID"
                 />
               </div>
 
-              <div>
-                <label htmlFor="course" className="block text-sm font-medium text-gray-700">
+              <div className="space-y-2">
+                <label htmlFor="course" className="block text-sm font-semibold text-gray-700">
                   Course
                 </label>
                 <input
@@ -170,12 +174,13 @@ const IssueCertificate = () => {
                   value={formData.course}
                   onChange={handleInputChange}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                  placeholder="Enter course name"
                 />
               </div>
 
-              <div>
-                <label htmlFor="semester" className="block text-sm font-medium text-gray-700">
+              <div className="space-y-2">
+                <label htmlFor="semester" className="block text-sm font-semibold text-gray-700">
                   Semester (1-8)
                 </label>
                 <input
@@ -186,105 +191,110 @@ const IssueCertificate = () => {
                   value={formData.semester_grades[0].sem_no}
                   onChange={handleSemesterChange}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                  placeholder="Enter semester (1-8)"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                  placeholder="Enter semester"
                 />
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-900">Subjects</h3>
+                <h3 className="text-xl font-semibold text-gray-800">Subjects</h3>
                 <button
                   type="button"
                   onClick={addSubject}
-                  className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
                 >
                   Add Subject
                 </button>
               </div>
 
-              {formData.semester_grades[0].subjects.map((subject, index) => (
-                <div key={index} className="bg-gray-50 p-4 rounded-lg space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Subject Name
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={subject.name}
-                        onChange={(e) => handleSubjectChange(e, index)}
-                        required
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                      />
+              <div className="space-y-4">
+                {formData.semester_grades[0].subjects.map((subject, index) => (
+                  <div key={index} className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-blue-200 transition duration-200">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Subject Name
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={subject.name}
+                          onChange={(e) => handleSubjectChange(e, index)}
+                          required
+                          className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                          placeholder="Enter subject name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Final Marks
+                        </label>
+                        <input
+                          type="number"
+                          name="final_marks"
+                          value={subject.final_marks}
+                          onChange={(e) => handleSubjectChange(e, index)}
+                          required
+                          min="0"
+                          max="100"
+                          className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                          placeholder="Enter marks"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Credits
+                        </label>
+                        <input
+                          type="number"
+                          name="credits"
+                          value={subject.credits}
+                          onChange={(e) => handleSubjectChange(e, index)}
+                          required
+                          min="1"
+                          className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+                          placeholder="Enter credits"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Final Marks
-                      </label>
-                      <input
-                        type="number"
-                        name="final_marks"
-                        value={subject.final_marks}
-                        onChange={(e) => handleSubjectChange(e, index)}
-                        required
-                        min="0"
-                        max="100"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Credits
-                      </label>
-                      <input
-                        type="number"
-                        name="credits"
-                        value={subject.credits}
-                        onChange={(e) => handleSubjectChange(e, index)}
-                        required
-                        min="1"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                      />
-                    </div>
+                    {formData.semester_grades[0].subjects.length > 1 && (
+                      <button 
+                        type="button"
+                        onClick={() => removeSubject(index)}
+                        className="mt-4 text-red-600 hover:text-red-800 text-sm font-medium transition duration-200"
+                      >
+                        Remove Subject
+                      </button>
+                    )}
                   </div>
-                  {formData.semester_grades[0].subjects.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeSubject(index)}
-                      className="text-red-600 hover:text-red-800 text-sm font-medium"
-                    >
-                      Remove Subject
-                    </button>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            <div className="flex items-center justify-end">
+            <div className="flex items-center justify-end pt-6">
               <button
                 type="submit"
                 disabled={loading}
-                className={`px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                className={`px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ${
                   loading ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                {loading ? 'Issuing...' : 'Issue Certificate'}
+                {loading ? 'Issuing Certificate...' : 'Issue Certificate'}
               </button>
             </div>
           </form>
 
           {error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600">{error}</p>
+            <div className="mx-8 mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
 
           {response && (
-            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-600">Certificate issued successfully!</p>
+            <div className="mx-8 mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+              <p className="text-green-600 text-sm">Certificate issued successfully!</p>
             </div>
           )}
         </div>

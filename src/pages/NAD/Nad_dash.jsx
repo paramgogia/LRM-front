@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, GraduationCap, History, UserCircle, Settings, LogOut } from 'lucide-react';
-
+import edu from '../../assets/edu.png';
 const Nad_Dash = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,7 +18,7 @@ const Nad_Dash = ({ children }) => {
       <div className="w-64 bg-white border-r border-gray-200">
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <img src="/api/placeholder/40/40" alt="Logo" className="h-8" />
+            <img src={edu} alt="Logo" className="h-8" />
             <div className="font-semibold text-sm text-blue-900">NAD Portal</div>
           </div>
         </div>

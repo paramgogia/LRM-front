@@ -7,7 +7,6 @@ const Credits = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedSemester, setSelectedSemester] = useState(1);
-  const [activeTab, setActiveTab] = useState('semester');
   const [redeemSuccess, setRedeemSuccess] = useState(false);
   const headers = {
     'username': 'SPIT',
@@ -15,25 +14,38 @@ const Credits = () => {
     'identity': 'e5858d0503cc9fbef80ff51c2fcfd5567a127f9d01b7a50ea6b8f0bc3a8419ac'
   };
 
+  // Calculate combined credits for semester 1 or regular credits for other semesters
+  const calculateSemesterCredits = (semester, additionalCredits) => {
+    if (!semester) return 0;
+    
+    const semesterTotal = semester.subjects.reduce((sum, subject) => {
+      return sum + Number(subject.credits);
+    }, 0);
+
+    // If it's semester 1, add additional credits
+    if (semester.sem_no === 1 && additionalCredits) {
+      const additionalTotal = additionalCredits.reduce((sum, credit) => {
+        return sum + Number(credit.credits);
+      }, 0);
+      return semesterTotal + additionalTotal;
+    }
+
+    return semesterTotal;
+  };
+
   // Calculate total credits
   const calculateTotalCredits = (data) => {
     if (!data) return 0;
     
-    // Sum semester credits
     const semesterCredits = data.semester_grades?.reduce((total, semester) => {
       const semTotal = semester.subjects.reduce((sum, subject) => {
-        // Convert each credit value to string and sum its digits
-        const creditDigits = String(subject.credits).split('').reduce((a, b) => Number(a) + Number(b), 0);
-        return sum + creditDigits;
+        return sum + Number(subject.credits);
       }, 0);
       return total + semTotal;
     }, 0) || 0;
 
-    // Sum additional credits
     const additionalCredits = data.additional_credits?.reduce((total, credit) => {
-      // Convert each credit value to string and sum its digits
-      const creditDigits = String(credit.credits).split('').reduce((a, b) => Number(a) + Number(b), 0);
-      return total + creditDigits;
+      return total + Number(credit.credits);
     }, 0) || 0;
 
     return semesterCredits + additionalCredits;
@@ -106,7 +118,7 @@ const Credits = () => {
             </div>
             <div className="bg-red-100 p-4 rounded-lg">
               <div className="text-red-500 font-medium">Academic Bank of Credits</div>
-              <div className="text-lg font-bold">2042-1020-5697</div>
+              <div className="text-lg font-bold">{studentData.abcID}</div>
             </div>
           </div>
         )}
@@ -147,9 +159,12 @@ const Credits = () => {
                       <span className="text-blue-600 font-bold">{semester.sem_no}</span>
                     </div>
                     <div>
-                      <h3 className="text-sm font-medium text-gray-500">Semester {semester.sem_no}</h3>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Semester {semester.sem_no}
+                        {semester.sem_no === 1 && ""}
+                      </h3>
                       <p className="text-lg font-semibold text-gray-900">
-                        {semester.subjects.reduce((sum, subject) => sum + subject.credits, 0)} Credits
+                        {calculateSemesterCredits(semester, semester.sem_no === 1 ? studentData.additional_credits : null)} Credits
                       </p>
                     </div>
                   </div>
@@ -157,124 +172,108 @@ const Credits = () => {
               ))}
             </div>
 
-            {/* Tabs Section */}
+            {/* Semester Selection */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="border-b">
-                <div className="flex">
-                  <button
-                    onClick={() => setActiveTab('semester')}
-                    className={`px-6 py-3 font-medium ${
-                      activeTab === 'semester'
-                        ? 'text-blue-600 border-b-2 border-blue-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Semester Grades
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('additional')}
-                    className={`px-6 py-3 font-medium ${
-                      activeTab === 'additional'
-                        ? 'text-blue-600 border-b-2 border-blue-600'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Other Credits
-                  </button>
-                </div>
-              </div>
-
               <div className="p-6">
-                {activeTab === 'semester' && (
-                  <div className="space-y-6">
-                    <div className="flex gap-2 flex-wrap">
-                      {studentData.semester_grades?.map((sem) => (
-                        <button
-                          key={sem.sem_no}
-                          onClick={() => setSelectedSemester(sem.sem_no)}
-                          className={`px-4 py-2 rounded-lg ${
-                            selectedSemester === sem.sem_no
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
-                        >
-                          Semester {sem.sem_no}
-                        </button>
-                      ))}
+                <div className="flex gap-2 flex-wrap mb-6">
+                  {studentData.semester_grades?.map((sem) => (
+                    <button
+                      key={sem.sem_no}
+                      onClick={() => setSelectedSemester(sem.sem_no)}
+                      className={`px-4 py-2 rounded-lg ${
+                        selectedSemester === sem.sem_no
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      Semester {sem.sem_no}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Combined View for Semester 1 */}
+                {selectedSemester === 1 ? (
+                  <div className="space-y-8">
+                    {/* Semester 1 Grades */}
+                    <div>
+                      <h2 className="text-xl font-bold mb-4">Semester 1 Grades</h2>
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {studentData.semester_grades
+                            .find(sem => sem.sem_no === 1)
+                            ?.subjects.map((subject, index) => (
+                              <tr key={index} className="border-b">
+                                <td className="px-6 py-4">{subject.name}</td>
+                                <td className="px-6 py-4">{subject.credits}</td>
+                                <td className="px-6 py-4">{subject.final_marks}</td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
                     </div>
 
-                    <table className="w-full">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject Code</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Year</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {studentData.semester_grades
-                          .find(sem => sem.sem_no === selectedSemester)
-                          ?.subjects.map((subject, index) => (
+                    {/* Other Credits */}
+                    <div>
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Course Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">College</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {studentData.additional_credits?.map((credit, index) => (
                             <tr key={index} className="border-b">
-                              <td className="px-6 py-4">{subject.name}</td>
-                              <td className="px-6 py-4">{subject.code || '-'}</td>
-                              <td className="px-6 py-4">{subject.credits}</td>
-                              <td className="px-6 py-4">{subject.year || '-'}</td>
-                              <td className="px-6 py-4">{subject.final_marks}</td>
+                              <td className="px-6 py-4">{credit.course_name}</td>
+                              <td className="px-6 py-4">{credit.type}</td>
+                              <td className="px-6 py-4">{credit.credits}</td>
+                              <td className="px-6 py-4">{credit.marks}</td>
+                              <td className="px-6 py-4">{credit.college_name}</td>
                             </tr>
                           ))}
-                      </tbody>
-                    </table>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                )}
-
-                {activeTab === 'additional' && (
+                ) : (
+                  // Regular semester view for other semesters
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Course Name</th>
-                        {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th> */}
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject Code</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Year</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">College</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {studentData.additional_credits?.map((credit, index) => (
-                        <tr key={index} className="border-b">
-                          <td className="px-6 py-4">{credit.course_name}</td>
-                          {/* <td className="px-6 py-4">{credit.type}</td> */}
-                          <td className="px-6 py-4">{credit.credits}</td>
-                          <td className="px-6 py-4">{credit.marks}</td>
-                          <td className="px-6 py-4">{credit.college_name}</td>
-                        </tr>
-                      ))}
+                      {studentData.semester_grades
+                        .find(sem => sem.sem_no === selectedSemester)
+                        ?.subjects.map((subject, index) => (
+                          <tr key={index} className="border-b">
+                            <td className="px-6 py-4">{subject.name}</td>
+                            <td className="px-6 py-4">{subject.code || '-'}</td>
+                            <td className="px-6 py-4">{subject.credits}</td>
+                            <td className="px-6 py-4">{subject.year || '-'}</td>
+                            <td className="px-6 py-4">{subject.final_marks}</td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 )}
               </div>
             </div>
-
-            {/* Credit Management */}
-            {/* <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold mb-6">Credit Management</h2>
-              <div className="flex gap-4">
-                <button
-                  onClick={handleRedeemCredits}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  Redeem Credits
-                </button>
-                
-              </div>
-              {redeemSuccess && (
-                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-600">
-                  Credits Redeemed Successfully
-                </div>
-              )}
-            </div> */}
           </div>
         )}
       </div>
