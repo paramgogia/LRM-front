@@ -15,6 +15,7 @@ import AcademicDashboard from './pages/Student/StudentsCredits';
 import Studentdash from './pages/Student/StudentDash';
 import RedeemCreditsComponent from './pages/Redeem';
 import CollegeRegistration from './pages/NAD/CollegeRegistration';
+import AcademicDashboardhei from './pages/NAD/heiview';
 function App() {
   return (
     <BrowserRouter>
@@ -35,6 +36,7 @@ function App() {
         <Route path="nad" element={<Nad_Dash ><Outlet /></Nad_Dash>} >
         <Route path="nad-admission" element={<NADStudentAdmission />} />
         <Route path="college-registration" element={<CollegeRegistration />} />
+        <Route path = "credit-verification" element={<AcademicDashboardhei />} />
         </Route>
         
         <Route path="student" element={<Studentdash ><Outlet /></Studentdash>} >

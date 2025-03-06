@@ -201,8 +201,9 @@ const Credits = () => {
                         <thead className="bg-gray-50">
                           <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credits</th>
+                           
                           </tr>
                         </thead>
                         <tbody>
@@ -211,8 +212,9 @@ const Credits = () => {
                             ?.subjects.map((subject, index) => (
                               <tr key={index} className="border-b">
                                 <td className="px-6 py-4">{subject.name}</td>
-                                <td className="px-6 py-4">{subject.credits}</td>
                                 <td className="px-6 py-4">{subject.final_marks}</td>
+                                <td className="px-6 py-4">{subject.credits}</td>
+                                
                               </tr>
                             ))}
                         </tbody>

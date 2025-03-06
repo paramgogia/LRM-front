@@ -140,7 +140,7 @@ const RedeemCreditsComponent = () => {
                             <p><span className="font-medium">ABC ID:</span> {response.studentData.abcID}</p>
                             <p><span className="font-medium">Course:</span> {response.studentData.course} - {response.studentData.specialization}</p>
                             <p><span className="font-medium">Course Code:</span> {response.studentData.course_code}</p>
-                            <p><span className="font-medium">Admission Date:</span> {new Date(response.studentData.admission_date).toLocaleDateString()}</p>
+                            {/* <p><span className="font-medium">Admission Date:</span> {new Date(response.studentData.admission_date).toLocaleDateString()}</p> */}
                           </div>
                         </div>
                         <div className="flex-1 mt-3 md:mt-0">

@@ -11,6 +11,7 @@ const DashboardLayout = ({ children }) => {
     {icon: GraduationCap, label: 'NAD Portal', path: '/nad/nad-admission'},
     {icon: GraduationCap, label: 'Student Portal', path: '/student/academic-dashboard'},
     {icon: GraduationCap, label: 'College Admission', path: '/college-admission'},
+    {icon: GraduationCap, label: 'Credit Verification', path: '/nad/credit-verification'},
     // {icon: GraduationCap, label: 'NAD Admission', path: '/nad-admission'},
     {icon: GraduationCap, label: 'Issue Certificate', path: '/issue-certificate'},
     {icon: GraduationCap, label: 'Transfer Credits', path: '/transfer-credits'},

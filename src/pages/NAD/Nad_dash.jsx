@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, GraduationCap, History, UserCircle, Settings, LogOut } from 'lucide-react';
-import edu from '../../assets/edu.png';
+import edu from '../../assets/nad.png';
 const Nad_Dash = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -10,6 +10,7 @@ const Nad_Dash = ({ children }) => {
     { icon: Home, label: 'Overview', path: '/' },
     {icon: GraduationCap, label: 'Student Registration', path: '/nad/nad-admission'},
     {icon: GraduationCap, label: 'College /Other HEI Registration', path: '/nad/college-registration'},
+    // {icon: GraduationCap, label: 'Credit Verification', path: '/nad/credit-verification'},
   ];
 
   return (
